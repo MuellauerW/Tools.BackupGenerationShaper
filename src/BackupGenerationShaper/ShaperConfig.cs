@@ -22,17 +22,20 @@ namespace BackupGenerationShaper
       // Predefine properties here
       s_ShaperDebugOptions = new ConfigurationProperty("DebugOptions", typeof(ShaperDebugOptions), new ShaperDebugOptions(), ConfigurationPropertyOptions.IsRequired);
       s_ShaperLogOptions = new ConfigurationProperty("LogOptions", typeof(ShaperLogOptions), new ShaperLogOptions(), ConfigurationPropertyOptions.IsRequired);
+      s_ShaperFtpOptions = new ConfigurationProperty("FtpOptions", typeof(ShaperFtpOptions), new ShaperFtpOptions(), ConfigurationPropertyOptions.IsRequired);
       s_ShaperDirectoryList = new ConfigurationProperty("DirectoryList", typeof(ShaperDirectoryCollection), new ShaperDirectoryCollection(), ConfigurationPropertyOptions.IsRequired);
 
       s_Properties = new ConfigurationPropertyCollection();
       s_Properties.Add(s_ShaperDebugOptions);
       s_Properties.Add(s_ShaperLogOptions);
+      s_Properties.Add(s_ShaperFtpOptions);
       s_Properties.Add(s_ShaperDirectoryList);
     } //end     static ShaperConfig()
 
     #region Static Fields
     private static ConfigurationProperty s_ShaperDebugOptions;
     private static ConfigurationProperty s_ShaperLogOptions;
+    private static ConfigurationProperty s_ShaperFtpOptions;
     private static ConfigurationProperty s_ShaperDirectoryList;
     private static ConfigurationPropertyCollection s_Properties;
     #endregion
@@ -45,6 +48,9 @@ namespace BackupGenerationShaper
 
     [ConfigurationProperty("LogOptions", IsRequired = true)]
     public ShaperLogOptions LogOptions => (ShaperLogOptions)base[s_ShaperLogOptions];
+
+    [ConfigurationProperty("FtpOptions", IsRequired = true)]
+    public ShaperFtpOptions FtpOptions => (ShaperFtpOptions)base[s_ShaperFtpOptions];
 
     [ConfigurationProperty("DirectoryList", IsRequired = true)]
     public ShaperDirectoryCollection DirectoryList => (ShaperDirectoryCollection)base[s_ShaperDirectoryList];
@@ -75,26 +81,35 @@ namespace BackupGenerationShaper
       s_IsSimulateOnly = new ConfigurationProperty("IsSimulateOnly", typeof(bool), true, ConfigurationPropertyOptions.IsRequired);
       s_IsInteractive = new ConfigurationProperty("IsInteractive", typeof(bool), true, ConfigurationPropertyOptions.IsRequired);
       s_OnExceptionSendMail = new ConfigurationProperty("OnExceptionSendMail", typeof(bool), true, ConfigurationPropertyOptions.IsRequired);
-      s_MailTo = new ConfigurationProperty("MailTo", typeof(string), "w.muellauer@mdc.at", ConfigurationPropertyOptions.None);
-      s_MailFrom = new ConfigurationProperty("MailFrom", typeof(string), "spike.mdc@mdc.at", ConfigurationPropertyOptions.None);
-      s_MailSMTP = new ConfigurationProperty("MailSMTP", typeof(string), "mail.mdc.at", ConfigurationPropertyOptions.None);
+      s_MailReceiverList = new ConfigurationProperty("MailReceiverList", typeof(string), "receiver@domain.com", ConfigurationPropertyOptions.None);
+      s_MailSender = new ConfigurationProperty("MailSender", typeof(string), "sender@domain.com", ConfigurationPropertyOptions.None);
+      s_MailSmtpHostname = new ConfigurationProperty("MailSmtpHostname", typeof(string), "mail.domain.com", ConfigurationPropertyOptions.None);
+      s_MailSmtpPort = new ConfigurationProperty("MailSmtpPort", typeof(int), 0, ConfigurationPropertyOptions.None);
+      s_MailSmtpUsername = new ConfigurationProperty("MailSmtpUsername", typeof(string), "username", ConfigurationPropertyOptions.None);
+      s_MailSmtpPassword = new ConfigurationProperty("MailSmtpPassword", typeof(string), "password", ConfigurationPropertyOptions.None);
 
       s_Properties = new ConfigurationPropertyCollection();
       s_Properties.Add(s_IsSimulateOnly);
       s_Properties.Add(s_IsInteractive);
       s_Properties.Add(s_OnExceptionSendMail);
-      s_Properties.Add(s_MailTo);
-      s_Properties.Add(s_MailFrom);
-      s_Properties.Add(s_MailSMTP);
+      s_Properties.Add(s_MailReceiverList);
+      s_Properties.Add(s_MailSender);
+      s_Properties.Add(s_MailSmtpHostname);
+      s_Properties.Add(s_MailSmtpPort);
+      s_Properties.Add(s_MailSmtpUsername);
+      s_Properties.Add(s_MailSmtpPassword);
     }
 
     #region Static Fields
     private static ConfigurationProperty s_IsSimulateOnly;
     private static ConfigurationProperty s_IsInteractive;
     private static ConfigurationProperty s_OnExceptionSendMail;
-    private static ConfigurationProperty s_MailTo;
-    private static ConfigurationProperty s_MailFrom;
-    private static ConfigurationProperty s_MailSMTP;
+    private static ConfigurationProperty s_MailReceiverList;
+    private static ConfigurationProperty s_MailSender;
+    private static ConfigurationProperty s_MailSmtpHostname;
+    private static ConfigurationProperty s_MailSmtpPort;
+    private static ConfigurationProperty s_MailSmtpUsername;
+    private static ConfigurationProperty s_MailSmtpPassword;
     private static ConfigurationPropertyCollection s_Properties;
     #endregion
 
@@ -109,14 +124,23 @@ namespace BackupGenerationShaper
     [ConfigurationProperty("OnExceptionSendMail", IsRequired = true)]
     public bool OnExceptionSendMail => (bool)base[s_OnExceptionSendMail];
 
-    [ConfigurationProperty("MailTo", IsRequired = false)]
-    public string MailTo => (string)base[s_MailTo];
+    [ConfigurationProperty("MailReceiverList", IsRequired = false)]
+    public string MailReceiverList => (string)base[s_MailReceiverList];
 
-    [ConfigurationProperty("MailFrom", IsRequired = false)]
-    public string MailFrom => (string)base[s_MailFrom];
+    [ConfigurationProperty("MailSender", IsRequired = false)]
+    public string MailSender => (string)base[s_MailSender];
 
-    [ConfigurationProperty("MailSMTP", IsRequired = false)]
-    public string MailSMTP => (string)base[s_MailSMTP];
+    [ConfigurationProperty("MailSmtpHostname", IsRequired = false)]
+    public string MailSmtpHostname => (string)base[s_MailSmtpHostname];
+
+    [ConfigurationProperty("MailSmtpPort", IsRequired = false)]
+    public int MailSmtpPort => (int)base[s_MailSmtpPort];
+
+    [ConfigurationProperty("MailSmtpUsername", IsRequired = false)]
+    public string MailSmtpUsername => (string)base[s_MailSmtpUsername];
+
+    [ConfigurationProperty("MailSmtpPassword", IsRequired = false)]
+    public string MailSmtpPassword => (string)base[s_MailSmtpPassword];
 
     protected override ConfigurationPropertyCollection Properties => s_Properties;
     #endregion
@@ -176,6 +200,59 @@ namespace BackupGenerationShaper
 
 
 
+
+
+  /// <summary>
+  /// Die ShaperFtpOptions definieren alle Settings für das FTP Handling:
+  /// Wenn das Protokoll ftp: bei einem directory verwendet wird,
+  /// dann kann die software auf über das FTP Protokoll in diesen Directories
+  /// Nachschau halten und eventuell Files löschen Es müssen nur dann sinnvolle
+  /// Werte angegeben werden, wenn es auch Directories mit ProtokollName
+  /// ftp: gibt. Ansonsten kann man dummy werte hier eintragen
+  /// </summary>
+  public class ShaperFtpOptions : ConfigurationElement
+  {
+    /// <summary>
+    /// Der statisch ctor initialisiert das ganze Ding wie üblich
+    /// </summary>
+    static ShaperFtpOptions()
+    {
+      s_Username = new ConfigurationProperty("Username", typeof(string), string.Empty, ConfigurationPropertyOptions.IsRequired);
+      s_Password = new ConfigurationProperty("Password", typeof(string), string.Empty, ConfigurationPropertyOptions.IsRequired);
+      s_Hostname = new ConfigurationProperty("HostName", typeof(string), string.Empty, ConfigurationPropertyOptions.IsRequired);
+
+      s_Properties = new ConfigurationPropertyCollection();
+      s_Properties.Add(s_Username);
+      s_Properties.Add(s_Password);
+      s_Properties.Add(s_Hostname);
+    }
+
+
+    #region Static Fields
+    private static ConfigurationProperty s_Username;
+    private static ConfigurationProperty s_Password;
+    private static ConfigurationProperty s_Hostname;
+    private static ConfigurationPropertyCollection s_Properties;
+    #endregion
+
+
+    #region Properties
+    [ConfigurationProperty("Username", IsRequired = true)]
+    public string Username => (string)base[s_Username];
+
+    [ConfigurationProperty("Password", IsRequired = true)]
+    public string Password => (string)base[s_Password];
+
+    [ConfigurationProperty("Hostname", IsRequired = false)]
+    public string Hostname => (string)base[s_Hostname];
+
+    protected override ConfigurationPropertyCollection Properties => s_Properties;
+    #endregion
+  } //end public class ShaperLogOptions : ConfigurationElement
+
+
+
+  
   /// <summary>
   /// Die Klasse ShaperDirectoryEntry beschreibt einen Eintrag für 
   /// ein Directory. Hier werden der DirectoryName, das Format für
@@ -189,11 +266,13 @@ namespace BackupGenerationShaper
     /// </summary>
     static ShaperDirectoryElement()
     {
+      s_ProtocolName = new ConfigurationProperty("ProtocolName", typeof(string), String.Empty, ConfigurationPropertyOptions.None);
       s_DirectoryName = new ConfigurationProperty("DirectoryName", typeof(string), String.Empty, ConfigurationPropertyOptions.None);
       s_TimestampFormat = new ConfigurationProperty("TsFormat", typeof(string), String.Empty, ConfigurationPropertyOptions.None);
       s_GenerationCount = new ConfigurationProperty("GenerationCount", typeof(int), 0, ConfigurationPropertyOptions.None);
 
       s_Properties = new ConfigurationPropertyCollection();
+      s_Properties.Add(s_ProtocolName);
       s_Properties.Add(s_DirectoryName);
       s_Properties.Add(s_TimestampFormat);
       s_Properties.Add(s_GenerationCount);
@@ -201,6 +280,8 @@ namespace BackupGenerationShaper
 
 
     #region Static Fields
+
+    private static ConfigurationProperty s_ProtocolName;
     private static ConfigurationProperty s_DirectoryName;
     private static ConfigurationProperty s_TimestampFormat;
     private static ConfigurationProperty s_GenerationCount;
@@ -210,6 +291,9 @@ namespace BackupGenerationShaper
 
 
     #region Properties
+    [ConfigurationProperty("ProtocolName", IsRequired = true)]
+    public string ProtocolName => (string)base[s_ProtocolName];
+
     [ConfigurationProperty("DirectoryName", IsRequired = true)]
     public string DirectoryName => (string)base[s_DirectoryName];
 
@@ -295,6 +379,8 @@ namespace BackupGenerationShaper
   } //end public class ShaperDirectoryCollection : ConfigurationElementCollection
 
 
+
+
   /// <summary>
   /// Diese Klasse entählt einige Tool-Methoden, die das Handling der Config-
   /// options erleichtern sollen.
@@ -310,9 +396,12 @@ namespace BackupGenerationShaper
       yield return $"  [IsInteractive]:{sc.DebugOptions.IsInteractive}";
       yield return $"  [OnExceptionSendMail]:{sc.DebugOptions.OnExceptionSendMail}";
       if (sc.DebugOptions.OnExceptionSendMail == true) {
-        yield return $"  [MailTo]:{sc.DebugOptions.MailTo}";
-        yield return $"  [MailFrom]:{sc.DebugOptions.MailFrom}";
-        yield return $"  [MailSTMP]:{sc.DebugOptions.MailSMTP}";
+        yield return $"  [MailReceiverList]:{sc.DebugOptions.MailReceiverList}";
+        yield return $"  [MailSender]:{sc.DebugOptions.MailSender}";
+        yield return $"  [MailSmtpHostname]:{sc.DebugOptions.MailSmtpHostname}";
+        yield return $"  [MailSmtpPort]:{sc.DebugOptions.MailSmtpPort}";
+        yield return $"  [MailSmtpUsername]:{sc.DebugOptions.MailSmtpUsername}";
+        yield return $"  [MailSmtpPassword]:{sc.DebugOptions.MailSmtpPassword}";
       } else {
         yield return "  [MailTo]:IGNORED";
         yield return "  [MailFrom]:IGNORED";
@@ -328,7 +417,7 @@ namespace BackupGenerationShaper
       }
       yield return " directory list:";
       foreach (ShaperDirectoryElement sde in sc.DirectoryList) {
-        yield return $"  [Directory]:{sde.DirectoryName} [TimestampFormat]:{sde.TimestampFormat} [GenerationCount]:{sde.GenerationsCount}";
+        yield return $"  [Protocol]:{sde.ProtocolName} [Directory]:{sde.DirectoryName} [TimestampFormat]:{sde.TimestampFormat} [GenerationCount]:{sde.GenerationsCount}";
       }
       yield return "end shaper config dump";
       yield break;
@@ -338,25 +427,7 @@ namespace BackupGenerationShaper
   } //end public class ShaperConfigTools
 
 
+
+
 } //end namespace BackupGenerationShaper
 
-
-/*
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-*/
