@@ -7,12 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Spikes", "Spikes", "{1F7F49
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spike_AppConfigSectionReader", "Spike_AppConfigSectionReader\Spike_AppConfigSectionReader.csproj", "{ADA917EF-871C-4620-9919-3682EA84BDC0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{E3ABD3E2-54CC-471D-AA01-EBCD162C8A66}"
-	ProjectSection(SolutionItems) = preProject
-		..\readme.md = ..\readme.md
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackukpGenerationShaper", "BackupGenerationShaper\BackukpGenerationShaper.csproj", "{B042D829-B585-44EE-AA81-15204B6CEB65}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackupGenerationShaper", "BackupGenerationShaper\BackupGenerationShaper.csproj", "{B042D829-B585-44EE-AA81-15204B6CEB65}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

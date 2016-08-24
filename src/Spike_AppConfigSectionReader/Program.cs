@@ -11,7 +11,7 @@ namespace Spike_AppConfigSectionReader
   {
     static void Main(string[] args)
     {
-      Console.WriteLine("Spike for learning handling .exe.config Filese");
+      Console.WriteLine("Spike for learning handling .exe.config Files");
       Console.WriteLine($"This program will try to deserialize config data{Environment.NewLine}from a config section into a config object");
       Console.WriteLine($"DefaultValue form .exe.config: \"{Properties.Settings.Default.DefaultValue}\" ");
 

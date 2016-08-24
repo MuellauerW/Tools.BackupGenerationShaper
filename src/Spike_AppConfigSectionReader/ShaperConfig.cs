@@ -75,9 +75,9 @@ namespace Spike_AppConfigSectionReader
       s_IsVerbose =     new ConfigurationProperty("IsVerbose", typeof(bool), true, ConfigurationPropertyOptions.IsRequired);
       s_IsInteractive = new ConfigurationProperty("IsInteractive", typeof(bool), true, ConfigurationPropertyOptions.IsRequired);
       s_OnExceptionSendMail = new ConfigurationProperty("OnExceptionSendMail", typeof(bool), true, ConfigurationPropertyOptions.IsRequired);
-      s_MailTo = new ConfigurationProperty("MailTo", typeof(string), "w.muellauer@mdc.at", ConfigurationPropertyOptions.None);
-      s_MailFrom = new ConfigurationProperty("MailFrom", typeof(string), "spike.mdc@mdc.at", ConfigurationPropertyOptions.None);
-      s_MailSMTP = new ConfigurationProperty("MailSMTP", typeof(string), "mail.mdc.at", ConfigurationPropertyOptions.None);
+      s_MailTo = new ConfigurationProperty("MailTo", typeof(string), "receiver@domain.com", ConfigurationPropertyOptions.None);
+      s_MailFrom = new ConfigurationProperty("MailFrom", typeof(string), "sender@domain.com", ConfigurationPropertyOptions.None);
+      s_MailSMTP = new ConfigurationProperty("MailSMTP", typeof(string), "mail.domain.com", ConfigurationPropertyOptions.None);
 
       s_Properties = new ConfigurationPropertyCollection();
       s_Properties.Add(s_IsVerbose);
